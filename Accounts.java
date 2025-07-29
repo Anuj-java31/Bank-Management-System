@@ -25,6 +25,7 @@ public class Accounts {
             System.out.print("Enter Security Pin: ");
             String security_pin = scanner.nextLine();
             try {
+                security_pin=getEncryptedSecurityPin(security_pin);
                 long account_num = generateAccountNumber();
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
                 preparedStatement.setLong(1, account_num);
@@ -87,5 +88,13 @@ public class Accounts {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+    public static String getEncryptedSecurityPin(String securityPin) {
+        StringBuilder encrypted = new StringBuilder();
+        for (int i = 0; i < securityPin.length(); i++) {
+            char c = securityPin.charAt(i);
+            encrypted.append((char) (c + i)); // shift each character by 3
+        }
+        return encrypted.toString();
     }
 }
