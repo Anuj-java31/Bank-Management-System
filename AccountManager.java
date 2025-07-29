@@ -22,6 +22,7 @@ public class AccountManager {
         String security_pin=scanner.nextLine();
         System.out.println();
         try{
+            security_pin=getEncryptedSecurityPin(security_pin);
             connection.setAutoCommit(false);
             if(account_number!=0){
                 PreparedStatement preparedStatement=connection.prepareStatement("SELECT * FROM accounts WHERE account_number=? AND security_pin=?");
@@ -71,6 +72,7 @@ public class AccountManager {
         try{
             connection.setAutoCommit(false);
             if(account_number!=0){
+                security_pin=getEncryptedSecurityPin(security_pin);
                 PreparedStatement preparedStatement=connection.prepareStatement("SELECT * FROM accounts WHERE account_number=? AND security_pin=?");
                 preparedStatement.setLong(1,account_number);
                 preparedStatement.setString(2,security_pin);
@@ -128,6 +130,7 @@ public class AccountManager {
             }
             connection.setAutoCommit(false);
             if (account_number != 0) {
+                security_pin=getEncryptedSecurityPin(security_pin);
                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM accounts WHERE account_number=? AND security_pin=?");
                 preparedStatement.setLong(1, account_number);
                 preparedStatement.setString(2, security_pin);
@@ -174,6 +177,7 @@ public class AccountManager {
         System.out.print("Enter security pin: ");
         String security_pin=scanner.nextLine();
         try {
+            security_pin=getEncryptedSecurityPin(security_pin);
             if (account_number != 0) {
                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM accounts WHERE account_number=? AND security_pin=?");
                 preparedStatement.setLong(1, account_number);
@@ -190,5 +194,12 @@ public class AccountManager {
             throw new RuntimeException();
         }
     }
-
+    public static String getEncryptedSecurityPin(String securityPin) {
+        StringBuilder encrypted = new StringBuilder();
+        for (int i = 0; i < securityPin.length(); i++) {
+            char c = securityPin.charAt(i);
+            encrypted.append((char) (c + i)); // shift each character by 3
+        }
+        return encrypted.toString();
+    }
 }
